@@ -1,28 +1,29 @@
-import React, {useState} from 'react'
-import axios from 'axios'
+import React, {useState, useEffect} from 'react'
 
-const Form = () => {
-    const [form, setForm] = useState({name: '', price: 0, description: ''})
+const Form = props => {
+    const [form, setForm] = useState({})
+
+    useEffect(() => {
+        setForm({...props.initialState})
+    }, [props.initialState])
 
     const onSubmitHandler = e => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/new', {...form})
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
+        props.callback(form);
     }
     
     return (
-        <div>
+        <div className='container col-6'>
             <h1 className='mb-3'>Product Manager</h1>
             <form onSubmit={onSubmitHandler}>
                 <div className='form-group'>
-                    <input className='form-control' onChange={(e) => setForm({...form, [e.target.name]: e.target.value})} type='text' placeholder='Name' name='name' />
+                    <input className='form-control' defaultValue={form.name} onChange={(e) => setForm({...form, [e.target.name]: e.target.value})} type='text' placeholder='Name' name='name' />
                 </div>
                 <div className='form-group'>
-                    <input className='form-control' onChange={(e) => setForm({...form, [e.target.name]: Number(e.target.value)})} type='text' placeholder='Price' name='price' />
+                    <input className='form-control' defaultValue={form.price} onChange={(e) => setForm({...form, [e.target.name]: e.target.value})} type='number' placeholder='Price' name='price' />
                 </div>
                 <div className='form-group'>
-                    <input className='form-control' onChange={(e) => setForm({...form, [e.target.name]: e.target.value})} type='text' placeholder='Description' name='description' />
+                    <input className='form-control' defaultValue={form.description} onChange={(e) => setForm({...form, [e.target.name]: e.target.value})} type='text' placeholder='Description' name='description' />
                 </div>
                 <button className='btn btn-primary' type='submit'>Submit</button>
             </form>
